@@ -147,7 +147,6 @@ RCT_IMPORT_METHOD(ReactNative, unmountComponentAtNodeAndRemoveContainer)
     });
   }
 }
->>>>>>> 0388978... [WIP] Added loadingView property to RCTRootView
 
 - (void)javaScriptDidLoad:(NSNotification *)notification
 {
