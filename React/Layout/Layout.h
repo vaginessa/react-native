@@ -1,15 +1,4 @@
 /**
- * @generated SignedSource<<58298c7a8815a8675e970b0347dedfed>>
- *
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- * !! This file is a check-in from github!                       !!
- * !!                                                            !!
- * !! You should not modify this file directly. Instead:         !!
- * !! 1) Go to https://github.com/facebook/css-layout            !!
- * !! 2) Make a pull request and get it merged                   !!
- * !! 3) Execute ./import.sh to pull in the latest version       !!
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- *
  * Copyright (c) 2014, Facebook, Inc.
  * All rights reserved.
  *
@@ -22,7 +11,16 @@
 #define __LAYOUT_H
 
 #include <math.h>
+#ifndef __cplusplus
 #include <stdbool.h>
+#endif
+
+// Not defined in MSVC++
+#ifndef NAN
+static const unsigned long __nan[2] = {0xffffffff, 0x7fffffff};
+#define NAN (*(const float *)__nan)
+#endif
+
 #define CSS_UNDEFINED NAN
 
 typedef enum {
@@ -113,6 +111,8 @@ typedef struct {
   float padding[4];
   float border[4];
   float dimensions[2];
+  float minDimensions[2];
+  float maxDimensions[2];
 } css_style_t;
 
 typedef struct css_node {
