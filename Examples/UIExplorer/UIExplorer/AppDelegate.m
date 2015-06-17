@@ -18,7 +18,7 @@
 
 @implementation AppDelegate
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+- (BOOL)application:(__unused UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   NSURL *jsCodeLocation;
 
@@ -50,7 +50,7 @@
   {
     url = [NSMutableString stringWithString:@"http://localhost:8081"];
   }
-  [url appendString:@"/Examples/UIExplorer/UIExplorerApp.includeRequire.runModule.bundle?dev=true"];
+  [url appendString:@"/Examples/UIExplorer/UIExplorerApp.ios.includeRequire.runModule.bundle?dev=true"];
   
   jsCodeLocation = [NSURL URLWithString:url];
 
