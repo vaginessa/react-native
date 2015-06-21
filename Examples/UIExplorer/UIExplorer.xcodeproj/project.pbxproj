@@ -506,6 +506,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 004D28AD1AAF61C70097A701 /* Build configuration list for PBXNativeTarget "UIExplorerUnitTests" */;
 			buildPhases = (
+				4CED84D91B3760EE00715E21 /* ShellScript */,
 				004D289A1AAF61C70097A701 /* Sources */,
 				004D289B1AAF61C70097A701 /* Frameworks */,
 				004D289C1AAF61C70097A701 /* Resources */,
@@ -769,6 +770,19 @@
 
 /* Begin PBXShellScriptBuildPhase section */
 		4CC373051B23ADA4004C3480 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "$SRCROOT/../../packager/launchPackager.command ${INFOPLIST_FILE}";
+		};
+		4CED84D91B3760EE00715E21 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
