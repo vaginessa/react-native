@@ -39,7 +39,10 @@ var createReactNativeComponentClass = function(
   Constructor.prototype = new ReactNativeBaseComponent(viewConfig);
   Constructor.prototype.constructor = Constructor;
 
-  return ((Constructor: any): ReactClass);
+  // bparadie, 2015-06-21: Rolling back changes introduced by 1acca01:
+  // [Flow] Fix or suppress react-native github errors for Flow v0.12.0.
+  // return ((Constructor: any): ReactClass);
+  return Constructor;
 };
 
 module.exports = createReactNativeComponentClass;
