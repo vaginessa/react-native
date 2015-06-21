@@ -16,21 +16,21 @@ fi
 export INFOPLIST_FILE=$1
 
 # extract RCTWebSocketExecutor/protocol from Info.plist
-PROTOCOL=$(/usr/libexec/PlistBuddy -c "Print :RCTWebSocketExecutor:protocol" "${INFOPLIST_FILE}")
+PROTOCOL=$(/usr/libexec/PlistBuddy -c "Print :RCTWebSocketExecutor:protocol" "${INFOPLIST_FILE}" 2>/dev/null)
 if [ -z "$PROTOCOL" ]; then
   PROTOCOL="http:"
 fi
 
 # extract RCTWebSocketExecutor/hostname from Info.plist
-HOSTNAME=$(/usr/libexec/PlistBuddy -c "Print :RCTWebSocketExecutor:hostname" "${INFOPLIST_FILE}")
+HOSTNAME=$(/usr/libexec/PlistBuddy -c "Print :RCTWebSocketExecutor:hostname" "${INFOPLIST_FILE}" 2>/dev/null)
 if [ -z "$HOSTNAME" ]; then
-  HOSTNAME ="localhost"
+  HOSTNAME="localhost"
 fi
 
 # extract RCTWebSocketExecutor/port from Info.plist
-PORT=$(/usr/libexec/PlistBuddy -c "Print :RCTWebSocketExecutor:port" "${INFOPLIST_FILE}")
+PORT=$(/usr/libexec/PlistBuddy -c "Print :RCTWebSocketExecutor:port" "${INFOPLIST_FILE}" 2>/dev/null)
 if [ -z "$PORT" ]; then
-  PORT ="8081"
+  PORT="8081"
 fi
 
 export PROTOCOL;
