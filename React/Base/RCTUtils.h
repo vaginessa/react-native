@@ -61,3 +61,6 @@ RCT_EXTERN NSError *RCTErrorWithMessage(NSString *message);
 // Convert nil values to NSNull, and vice-versa
 RCT_EXTERN id RCTNullIfNil(id value);
 RCT_EXTERN id RCTNilIfNull(id value);
+
+// Create NSURL for jsCodeLocation in AppDelegate:application
+RCT_EXTERN NSURL *RCTWebSocketExecutorURL(NSString *appendString);

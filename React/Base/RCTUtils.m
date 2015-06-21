@@ -285,3 +285,28 @@ id RCTNilIfNull(id value)
 {
   return value == (id)kCFNull ? nil : value;
 }
+
+NSURL *RCTWebSocketExecutorURL(NSString *appendString)
+{
+  NSMutableString* url;
+  NSDictionary *dict = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"RCTWebSocketExecutor"];
+  if( dict )
+  {
+    NSString* protocol = [dict objectForKey:@"protocol"];
+    NSString* hostname = [dict objectForKey:@"hostname"];
+    NSString* port = [NSString stringWithFormat:@"%@", [dict objectForKey:@"port"]]; ;
+    url = [NSMutableString stringWithString:protocol];
+    [url appendString:@"//"];
+    [url appendString:hostname];
+    [url appendString:@":"];
+    [url appendString:port];
+  }
+  else
+  {
+    url = [NSMutableString stringWithString:@"http://localhost:8081"];
+  }
+  // i.e. @"/Examples/UIExplorer/UIExplorerApp.ios.includeRequire.runModule.bundle?dev=true"
+  [url appendString:appendString];
+  
+  return [NSURL URLWithString:url];
+}
