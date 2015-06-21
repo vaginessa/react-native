@@ -16,6 +16,7 @@
 
 #import "RCTLinkingManager.h"
 #import "RCTRootView.h"
+#import "RCTUtils.h"
 
 @implementation AppDelegate
 
@@ -37,7 +38,7 @@
    * on the same Wi-Fi network.
    */
 
-  jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/Examples/Movies/MoviesApp.includeRequire.runModule.bundle"];
+  jsCodeLocation = RCTWebSocketExecutorURL(@"/Examples/Movies/MoviesApp.includeRequire.runModule.bundle");  
 
   /**
    * OPTION 2
