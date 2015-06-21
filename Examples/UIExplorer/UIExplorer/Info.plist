@@ -40,16 +40,17 @@
 	<false/>
 	<key>RCTWebSocketExecutor</key>
 	<dict>
-		<key>origin</key>
-		<string>http://localhost</string>
+		<key>protocol</key>
+		<string>http:</string>
+		<key>hostname</key>
+		<string>localhost</string>
 		<key>port</key>
 		<integer>8086</integer>
 	</dict>
 	<key>NSAppTransportSecurity</key>
-  <dict>
-    <!--See http://ste.vn/2015/06/10/configuring-app-transport-security-ios-9-osx-10-11/-->
-    <key>NSAllowsArbitraryLoads</key>
-    <true/>
-  </dict>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>
