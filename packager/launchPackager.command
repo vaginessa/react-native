@@ -14,9 +14,28 @@ if [ -z "$1" ]; then
 fi
 
 export INFOPLIST_FILE=$1
-export PROTOCOL=$(/usr/libexec/PlistBuddy -c "Print :RCTWebSocketExecutor:protocol" "${INFOPLIST_FILE}")
-export HOSTNAME=$(/usr/libexec/PlistBuddy -c "Print :RCTWebSocketExecutor:hostname" "${INFOPLIST_FILE}")
-export PORT=$(/usr/libexec/PlistBuddy -c "Print :RCTWebSocketExecutor:port" "${INFOPLIST_FILE}")
+
+# extract RCTWebSocketExecutor/protocol from Info.plist
+PROTOCOL=$(/usr/libexec/PlistBuddy -c "Print :RCTWebSocketExecutor:protocol" "${INFOPLIST_FILE}")
+if [ -z "$PROTOCOL" ]; then
+  PROTOCOL="http:"
+fi
+
+# extract RCTWebSocketExecutor/hostname from Info.plist
+HOSTNAME=$(/usr/libexec/PlistBuddy -c "Print :RCTWebSocketExecutor:hostname" "${INFOPLIST_FILE}")
+if [ -z "$HOSTNAME" ]; then
+  HOSTNAME ="localhost"
+fi
+
+# extract RCTWebSocketExecutor/port from Info.plist
+PORT=$(/usr/libexec/PlistBuddy -c "Print :RCTWebSocketExecutor:port" "${INFOPLIST_FILE}")
+if [ -z "$PORT" ]; then
+  PORT ="8081"
+fi
+
+export PROTOCOL;
+export HOSTNAME;
+export PORT;
 
 THIS_DIR=$(dirname "$0")
 
