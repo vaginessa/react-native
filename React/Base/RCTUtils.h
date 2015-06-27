@@ -64,3 +64,5 @@ RCT_EXTERN id RCTNilIfNull(id value);
 
 // Create NSURL for jsCodeLocation in AppDelegate:application
 RCT_EXTERN NSURL *RCTWebSocketExecutorURL(NSString *appendString);
+
+RCT_EXTERN NSDictionary *RCTJSErrorFromNSError(NSError *error);

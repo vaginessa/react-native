@@ -310,3 +310,24 @@ NSURL *RCTWebSocketExecutorURL(NSString *appendString)
   
   return [NSURL URLWithString:url];
 }
+
+// TODO: Can we just replace RCTMakeError with this function instead?
+NSDictionary *RCTJSErrorFromNSError(NSError *error)
+{
+  NSString *errorMessage;
+  NSArray *stackTrace = [NSThread callStackSymbols];
+  NSMutableDictionary *errorInfo =
+  [NSMutableDictionary dictionaryWithObject:stackTrace forKey:@"nativeStackIOS"];
+
+  if (error) {
+    errorMessage = error.localizedDescription ?: @"Unknown error from a native module";
+    errorInfo[@"domain"] = error.domain ?: RCTErrorDomain;
+    errorInfo[@"code"] = @(error.code);
+  } else {
+    errorMessage = @"Unknown error from a native module";
+    errorInfo[@"domain"] = RCTErrorDomain;
+    errorInfo[@"code"] = @-1;
+  }
+
+  return RCTMakeError(errorMessage, nil, errorInfo);
+}

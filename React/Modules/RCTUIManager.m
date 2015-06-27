@@ -58,20 +58,23 @@ static void RCTTraverseViewNodes(id<RCTViewNodeProtocol> view, react_view_node_b
 
 @implementation RCTAnimation
 
-static UIViewAnimationCurve UIViewAnimationCurveFromRCTAnimationType(RCTAnimationType type)
+static UIViewAnimationOptions UIViewAnimationOptionsFromRCTAnimationType(RCTAnimationType type)
 {
   switch (type) {
     case RCTAnimationTypeLinear:
-      return UIViewAnimationCurveLinear;
+      return UIViewAnimationOptionCurveLinear;
     case RCTAnimationTypeEaseIn:
-      return UIViewAnimationCurveEaseIn;
+      return UIViewAnimationOptionCurveEaseIn;
     case RCTAnimationTypeEaseOut:
-      return UIViewAnimationCurveEaseOut;
+      return UIViewAnimationOptionCurveEaseOut;
     case RCTAnimationTypeEaseInEaseOut:
-      return UIViewAnimationCurveEaseInOut;
+      return UIViewAnimationOptionCurveEaseInOut;
+    case RCTAnimationTypeKeyboard:
+      // http://stackoverflow.com/questions/18870447/how-to-use-the-default-ios7-uianimation-curve
+      return (UIViewAnimationOptions)(7 << 16);
     default:
       RCTLogError(@"Unsupported animation type %zd", type);
-      return UIViewAnimationCurveEaseInOut;
+      return UIViewAnimationOptionCurveEaseInOut;
   }
 }
 
@@ -123,7 +126,7 @@ static UIViewAnimationCurve UIViewAnimationCurveFromRCTAnimationType(RCTAnimatio
   } else {
 
     UIViewAnimationOptions options = UIViewAnimationOptionBeginFromCurrentState |
-      UIViewAnimationCurveFromRCTAnimationType(_animationType);
+      UIViewAnimationOptionsFromRCTAnimationType(_animationType);
 
     [UIView animateWithDuration:_duration
                           delay:_delay
@@ -357,6 +360,12 @@ static NSDictionary *RCTViewConfigForModule(Class managerClass)
     strongSelf->_shadowViewRegistry[shadowView.reactTag] = shadowView;
     [strongSelf->_rootViewTags addObject:reactTag];
   });
+}
+
+- (UIView *)viewForReactTag:(NSNumber *)reactTag
+{
+  RCTAssertMainThread();
+  return _viewRegistry[reactTag];
 }
 
 - (void)setFrame:(CGRect)frame forRootView:(UIView *)rootView
@@ -804,6 +813,7 @@ static void RCTSetShadowViewProps(NSDictionary *props, RCTShadowView *shadowView
 
 RCT_EXPORT_METHOD(createView:(NSNumber *)reactTag
                   viewName:(NSString *)viewName
+                  rootTag:(__unused NSNumber *)rootTag
                   props:(NSDictionary *)props)
 {
   RCTViewManager *manager = _viewManagers[viewName];
@@ -979,7 +989,9 @@ RCT_EXPORT_METHOD(findSubviewIn:(NSNumber *)reactTag atPoint:(CGPoint)point call
   [_pendingUIBlocksLock unlock];
 
   // Execute the previously queued UI blocks
+  RCTProfileBeginFlowEvent();
   dispatch_async(dispatch_get_main_queue(), ^{
+    RCTProfileEndFlowEvent();
     RCTProfileBeginEvent();
     for (dispatch_block_t block in previousPendingUIBlocks) {
       block();
@@ -1212,7 +1224,8 @@ RCT_EXPORT_METHOD(zoomToRect:(NSNumber *)reactTag
  * JS sets what *it* considers to be the responder. Later, scroll views can use
  * this in order to determine if scrolling is appropriate.
  */
-RCT_EXPORT_METHOD(setJSResponder:(NSNumber *)reactTag)
+RCT_EXPORT_METHOD(setJSResponder:(NSNumber *)reactTag
+                  blockNativeResponder:(__unused BOOL)blockNativeResponder)
 {
   [self addUIBlock:^(__unused RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
     _jsResponder = viewRegistry[reactTag];
@@ -1329,7 +1342,7 @@ RCT_EXPORT_METHOD(clearJSResponder)
     },
   } mutableCopy];
 
-  for (RCTViewManager *manager in _viewManagers) {
+  for (RCTViewManager *manager in _viewManagers.allValues) {
     if (RCTClassOverridesInstanceMethod([manager class], @selector(customBubblingEventTypes))) {
       NSDictionary *eventTypes = [manager customBubblingEventTypes];
       for (NSString *eventName in eventTypes) {
@@ -1390,7 +1403,7 @@ RCT_EXPORT_METHOD(clearJSResponder)
     },
   } mutableCopy];
 
-  for (RCTViewManager *manager in _viewManagers) {
+  for (RCTViewManager *manager in _viewManagers.allValues) {
     if (RCTClassOverridesInstanceMethod([manager class], @selector(customDirectEventTypes))) {
       NSDictionary *eventTypes = [manager customDirectEventTypes];
       for (NSString *eventName in eventTypes) {
