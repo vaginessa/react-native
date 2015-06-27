@@ -526,7 +526,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "$SRCROOT/../../packager/launchPackager.command ${INFOPLIST_FILE}";
+			shellScript = "if [ -d \"$SRCROOT/../../packager\" ]\nthen\n    PACKAGER_ROOT=$SRCROOT/../../packager\nelse\n    PACKAGER_ROOT=$SRCROOT/node_modules/react-native/packager\nfi\n\n$PACKAGER_ROOT/launchPackager.command ${INFOPLIST_FILE}\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -617,7 +617,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../React/**",
 				);
-				INFOPLIST_FILE = "iOS/Info.plist";
+				INFOPLIST_FILE = iOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = SampleApp;
@@ -633,7 +633,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../React/**",
 				);
-				INFOPLIST_FILE = "iOS/Info.plist";
+				INFOPLIST_FILE = iOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = SampleApp;

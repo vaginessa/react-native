@@ -333,7 +333,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "$SRCROOT/../../packager/launchPackager.command ${INFOPLIST_FILE}\n";
+			shellScript = "if [ -d \"$SRCROOT/../../packager\" ]\nthen\n    PACKAGER_ROOT=$SRCROOT/../../packager\nelse\n    PACKAGER_ROOT=$SRCROOT/node_modules/react-native/packager\nfi\n\n$PACKAGER_ROOT/launchPackager.command ${INFOPLIST_FILE}\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
