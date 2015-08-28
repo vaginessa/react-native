@@ -20,6 +20,12 @@
 typedef void (^RCTResponseSenderBlock)(NSArray *response);
 
 /**
+ * The type of a block that is capable of sending an error response to a
+ * bridged operation. Use this for returning error information to JS.
+ */
+typedef void (^RCTResponseErrorBlock)(NSError *error);
+
+/**
  * Block that bridge modules use to resolve the JS promise waiting for a result.
  * Nil results are supported and are converted to JS's undefined value.
  */
@@ -31,7 +37,6 @@ typedef void (^RCTPromiseResolveBlock)(id result);
  * precise error messages.
  */
 typedef void (^RCTPromiseRejectBlock)(NSError *error);
-
 
 /**
  * This constant can be returned from +methodQueue to force module
@@ -47,6 +52,21 @@ extern dispatch_queue_t RCTJSThread;
  * Provides the interface needed to register a bridge module.
  */
 @protocol RCTBridgeModule <NSObject>
+
+/**
+ * Place this macro in your class implementation to automatically register
+ * your module with the bridge when it loads. The optional js_name argument
+ * will be used as the JS module name. If omitted, the JS module name will
+ * match the Objective-C class name.
+ */
+#define RCT_EXPORT_MODULE(js_name) \
+RCT_EXTERN void RCTRegisterModule(Class); \
++ (NSString *)moduleName { return @#js_name; } \
++ (void)load { RCTRegisterModule(self); }
+
+// Implemented by RCT_EXPORT_MODULE
++ (NSString *)moduleName;
+
 @optional
 
 /**
@@ -79,17 +99,6 @@ extern dispatch_queue_t RCTJSThread;
  * when it initializes the module.
  */
 @property (nonatomic, strong, readonly) dispatch_queue_t methodQueue;
-
-/**
- * Place this macro in your class implementation to automatically register
- * your module with the bridge when it loads. The optional js_name argument
- * will be used as the JS module name. If omitted, the JS module name will
- * match the Objective-C class name.
- */
-#define RCT_EXPORT_MODULE(js_name) \
-  RCT_EXTERN void RCTRegisterModule(Class); \
-  + (NSString *)moduleName { return @#js_name; } \
-  + (void)load { RCTRegisterModule([self class]); }
 
 /**
  * Wrap the parameter line of your method implementation with this macro to

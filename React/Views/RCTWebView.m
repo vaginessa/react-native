@@ -18,11 +18,6 @@
 #import "RCTView.h"
 #import "UIView+React.h"
 
-// Special scheme that allow JS to notify the WebView to emit
-// navigation event.
-//
-// JavaScript Example:
-//   window.location.href = 'react-js-navigation://hello'
 NSString *const RCTJSNavigationScheme = @"react-js-navigation";
 
 @interface RCTWebView () <UIWebViewDelegate, RCTAutoInsetsProtocol>
@@ -33,7 +28,7 @@ NSString *const RCTJSNavigationScheme = @"react-js-navigation";
 {
   RCTEventDispatcher *_eventDispatcher;
   UIWebView *_webView;
-  NSString *_injectedJavascriptIOS;
+  NSString *_injectedJavaScript;
 }
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
@@ -52,8 +47,8 @@ NSString *const RCTJSNavigationScheme = @"react-js-navigation";
   return self;
 }
 
-RCT_NOT_IMPLEMENTED(-initWithFrame:(CGRect)frame)
-RCT_NOT_IMPLEMENTED(-initWithCoder:(NSCoder *)aDecoder)
+RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
+RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)goForward
 {
@@ -126,30 +121,17 @@ RCT_NOT_IMPLEMENTED(-initWithCoder:(NSCoder *)aDecoder)
   return _webView.backgroundColor;
 }
 
-- (void)setinjectedJavascriptIOS:(NSString *)jsStr
-{
-  if (_injectedJavascriptIOS == jsStr) {
-    return;
-  }
-
-  if ([_injectedJavascriptIOS isEqualToString:jsStr]) {
-    return;
-  }
-
-  _injectedJavascriptIOS = [jsStr copy];
-}
-
 - (NSMutableDictionary *)baseEvent
 {
   NSURL *url = _webView.request.URL;
   NSString *title = [_webView stringByEvaluatingJavaScriptFromString:@"document.title"];
   NSMutableDictionary *event = [[NSMutableDictionary alloc] initWithDictionary: @{
     @"target": self.reactTag,
-    @"url": url ? [url absoluteString] : @"",
+    @"url": url ? url.absoluteString : @"",
     @"loading" : @(_webView.loading),
     @"title": title,
-    @"canGoBack": @([_webView canGoBack]),
-    @"canGoForward" : @([_webView canGoForward]),
+    @"canGoBack": @(_webView.canGoBack),
+    @"canGoForward" : @(_webView.canGoForward),
   }];
 
   return event;
@@ -166,10 +148,10 @@ RCT_NOT_IMPLEMENTED(-initWithCoder:(NSCoder *)aDecoder)
   if (isTopFrame) {
     NSMutableDictionary *event = [self baseEvent];
     [event addEntriesFromDictionary: @{
-      @"url": [request.URL absoluteString],
+      @"url": (request.URL).absoluteString,
       @"navigationType": @(navigationType)
     }];
-    [_eventDispatcher sendInputEventWithName:@"topLoadingStart" body:event];
+    [_eventDispatcher sendInputEventWithName:@"loadingStart" body:event];
   }
 
   // JS Navigation handler
@@ -190,20 +172,20 @@ RCT_NOT_IMPLEMENTED(-initWithCoder:(NSCoder *)aDecoder)
   [event addEntriesFromDictionary: @{
     @"domain": error.domain,
     @"code": @(error.code),
-    @"description": [error localizedDescription],
+    @"description": error.localizedDescription,
   }];
-  [_eventDispatcher sendInputEventWithName:@"topLoadingError" body:event];
+  [_eventDispatcher sendInputEventWithName:@"loadingError" body:event];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
-  if (_injectedJavascriptIOS != nil) {
-    [webView stringByEvaluatingJavaScriptFromString:_injectedJavascriptIOS];
+  if (_injectedJavaScript != nil) {
+    [webView stringByEvaluatingJavaScriptFromString:_injectedJavaScript];
   }
 
   // we only need the final 'finishLoad' call so only fire the event when we're actually done loading.
   if (!webView.loading && ![webView.request.URL.absoluteString isEqualToString:@"about:blank"]) {
-    [_eventDispatcher sendInputEventWithName:@"topLoadingFinish" body:[self baseEvent]];
+    [_eventDispatcher sendInputEventWithName:@"loadingFinish" body:[self baseEvent]];
   }
 }
 

@@ -1,4 +1,16 @@
-// Copyright 2004-present Facebook. All Rights Reserved.
+/**
+ * The examples provided by Facebook are for non-commercial testing and
+ * evaluation purposes only.
+ *
+ * Facebook reserves all rights not expressly granted.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
+ * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+ * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 #import <mach/mach_time.h>
 
@@ -7,6 +19,7 @@
 #import "RCTContextExecutor.h"
 #import "RCTUtils.h"
 
+#define RUN_PERF_TESTS 0
 
 @interface RCTContextExecutorTests : XCTestCase
 
@@ -20,8 +33,7 @@
 - (void)setUp
 {
   [super setUp];
-  _executor = [[RCTContextExecutor alloc] init];
-  RCTSetExecutorID(_executor);
+  _executor = [RCTContextExecutor new];
   [_executor setUp];
 }
 
@@ -36,6 +48,8 @@
   dispatch_semaphore_wait(doneSem, DISPATCH_TIME_FOREVER);
   [_executor invalidate];
 }
+
+#if RUN_PERF_TESTS
 
 static uint64_t _get_time_nanoseconds(void)
 {
@@ -80,7 +94,7 @@ static uint64_t _get_time_nanoseconds(void)
   JSContextGroupRelease(group);
 }
 
-- (void)MANUALLY_testJavaScriptCallSpeed
+- (void)testJavaScriptCallSpeed
 {
 /**
  * Since we almost don't change the RCTContextExecutor logic, and this test is
@@ -115,7 +129,7 @@ static uint64_t _get_time_nanoseconds(void)
   ";
 
   [_executor executeApplicationScript:script sourceURL:[NSURL URLWithString:@"http://localhost:8081/"] onComplete:^(__unused NSError *error) {
-    NSMutableArray *params = [[NSMutableArray alloc] init];
+    NSMutableArray *params = [NSMutableArray new];
     id data = @1;
     for (int i = 0; i < 4; i++) {
       double samples[runs / frequency];
@@ -127,7 +141,6 @@ static uint64_t _get_time_nanoseconds(void)
           [_executor executeJSCall:@"module"
                            method:@"method"
                         arguments:params
-                          context:RCTGetExecutorID(_executor)
                          callback:^(id json, __unused NSError *unused) {
                            XCTAssert([json isEqual:@YES], @"Invalid return");
                          }];
@@ -189,5 +202,7 @@ static uint64_t _get_time_nanoseconds(void)
                              beforeDate:[NSDate dateWithTimeIntervalSinceNow:10]];
   }
 }
+
+#endif
 
 @end
