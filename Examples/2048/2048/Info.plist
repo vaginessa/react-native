@@ -39,12 +39,10 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>RCTWebSocketExecutor</key>
+	<key>RCTPackager</key>
 	<dict>
-		<key>protocol</key>
-		<string>http:</string>
-		<key>hostname</key>
-		<string>localhost</string>
+		<key>url</key>
+		<string>http://localhost</string>
 		<key>port</key>
 		<integer>8088</integer>
 	</dict>

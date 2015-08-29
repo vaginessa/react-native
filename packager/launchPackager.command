@@ -15,39 +15,32 @@ fi
 
 export INFOPLIST_FILE=$1
 
-# extract RCTWebSocketExecutor/protocol from Info.plist
-PROTOCOL=$(/usr/libexec/PlistBuddy -c "Print :RCTWebSocketExecutor:protocol" "${INFOPLIST_FILE}" 2>/dev/null)
-if [ -z "$PROTOCOL" ]; then
-  PROTOCOL="http:"
+# extract RCTPackager/protocol from Info.plist
+URL=$(/usr/libexec/PlistBuddy -c "Print :RCTPackager:url" "${INFOPLIST_FILE}" 2>/dev/null)
+if [ -z "$URL" ]; then
+  URL ="http://localhost"
 fi
 
-# extract RCTWebSocketExecutor/hostname from Info.plist
-HOSTNAME=$(/usr/libexec/PlistBuddy -c "Print :RCTWebSocketExecutor:hostname" "${INFOPLIST_FILE}" 2>/dev/null)
-if [ -z "$HOSTNAME" ]; then
-  HOSTNAME="localhost"
-fi
-
-# extract RCTWebSocketExecutor/port from Info.plist
-PORT=$(/usr/libexec/PlistBuddy -c "Print :RCTWebSocketExecutor:port" "${INFOPLIST_FILE}" 2>/dev/null)
+# extract RCTPackager/port from Info.plist
+PORT=$(/usr/libexec/PlistBuddy -c "Print :RCTPackager:port" "${INFOPLIST_FILE}" 2>/dev/null)
 if [ -z "$PORT" ]; then
   PORT="8081"
 fi
 
-export PROTOCOL;
-export HOSTNAME;
+export URL;
 export PORT;
 
 THIS_DIR=$(dirname "$0")
 
 if nc -w 5 -z localhost $PORT ; then
-  if ! curl -s "${PROTOCOL}//${HOSTNAME}:${PORT}/status" | grep -q "packager-status:running" ; then
-    echo "Port ${PORT} already in use, packager is either not running or not running correctly"
+  if ! curl -s "${URL}:${PORT}/status" | grep -q "packager-status:running" ; then
+    echo "Port ${URL}:${PORT} already in use, packager is either not running or not running correctly"
     exit 2
   fi
 else
   # open w/t --args doesn't work:
-  # open $THIS_DIR/packager.sh --args --protocol=${PROTOCOL} --hostname=${HOSTNAME} --port=${PORT} || echo "Can't start packager automatically"
+  # open $THIS_DIR/packager.sh --args --url=${URL} --port=${PORT} || echo "Can't start packager automatically"
   osascript -e 'tell app "Terminal"
-    do script "'$THIS_DIR'/packager.sh --protocol='${PROTOCOL}' --hostname='${HOSTNAME}' --port='${PORT}'"
+    do script "'$THIS_DIR'/packager.sh --url='${URL}' --port='${PORT}'"
   end tell' || echo "Can't start packager automatically"
 fi

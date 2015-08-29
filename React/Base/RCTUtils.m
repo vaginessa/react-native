@@ -423,23 +423,16 @@ NSData *RCTGzipData(NSData *input, float level)
   return output;
 }
 
-NSURL *RCTWebSocketExecutorURL(NSString *appendString)
+NSURL *RCTPackagerURL(NSString *appendString)
 {
-  NSMutableString* url;
-  NSDictionary *dict = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"RCTWebSocketExecutor"];
-  if( dict )
-  {
-    NSString* protocol = [dict objectForKey:@"protocol"];
-    NSString* hostname = [dict objectForKey:@"hostname"];
-    NSString* port = [NSString stringWithFormat:@"%@", [dict objectForKey:@"port"]]; ;
-    url = [NSMutableString stringWithString:protocol];
-    [url appendString:@"//"];
-    [url appendString:hostname];
+  NSMutableString *url;
+  NSDictionary *dict = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"RCTPackager"];
+  if (dict) {
+    NSString *port = [NSString stringWithFormat:@"%@", [dict objectForKey:@"port"]];
+    url = [NSMutableString stringWithString:dict[@"url"]];
     [url appendString:@":"];
     [url appendString:port];
-  }
-  else
-  {
+  } else {
     url = [NSMutableString stringWithString:@"http://localhost:8081"];
   }
   // i.e. @"/Examples/UIExplorer/UIExplorerApp.ios.includeRequire.runModule.bundle?dev=true"

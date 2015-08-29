@@ -38,12 +38,10 @@
 	<string>You need to add NSLocationWhenInUseUsageDescription key in Info.plist to enable geolocation, otherwise it is going to *fail silently*!</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>RCTWebSocketExecutor</key>
+	<key>RCTPackager</key>
 	<dict>
-		<key>protocol</key>
-		<string>http:</string>
-		<key>hostname</key>
-		<string>localhost</string>
+		<key>url</key>
+		<string>http://localhost</string>
 		<key>port</key>
 		<integer>8081</integer>
 	</dict>

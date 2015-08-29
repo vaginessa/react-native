@@ -37,7 +37,7 @@
    * on the same Wi-Fi network.
    */
 
-  jsCodeLocation = RCTWebSocketExecutorURL(@"/Examples/2048/Game2048.includeRequire.runModule.bundle");
+  jsCodeLocation = RCTPackagerURL(@"/Examples/2048/Game2048.includeRequire.runModule.bundle");
 
   /**
    * OPTION 2

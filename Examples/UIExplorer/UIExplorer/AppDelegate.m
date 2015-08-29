@@ -60,7 +60,7 @@
      * on the same Wi-Fi network.
      */
 
-    sourceURL = RCTWebSocketExecutorURL(@"/Examples/UIExplorer/UIExplorerApp.ios.includeRequire.runModule.bundle?dev=true");
+    sourceURL = RCTPackagerURL(@"/Examples/UIExplorer/UIExplorerApp.ios.includeRequire.runModule.bundle?dev=true");
     
     /**
      * OPTION 2

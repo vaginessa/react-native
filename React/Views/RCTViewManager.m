@@ -54,7 +54,7 @@ RCT_EXPORT_MODULE()
   return _bridge.uiManager.methodQueue;
 }
 
-- (UIView *)viewWithProps:(NSDictionary *)props
+- (UIView *)viewWithProps:(NSDictionary *) __attribute__((unused)) props 
 {
   return [self view];
 }

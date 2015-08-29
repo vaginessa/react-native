@@ -38,7 +38,7 @@
    * on the same Wi-Fi network.
    */
 
-  jsCodeLocation = RCTWebSocketExecutorURL(@"/Examples/Movies/MoviesApp.includeRequire.runModule.bundle");  
+  jsCodeLocation = RCTPackagerURL(@"/Examples/Movies/MoviesApp.includeRequire.runModule.bundle");  
 
   /**
    * OPTION 2

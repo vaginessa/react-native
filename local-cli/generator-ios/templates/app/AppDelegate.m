@@ -32,7 +32,7 @@
    * on the same Wi-Fi network.
    */
 
-  jsCodeLocation = RCTWebSocketExecutorURL(@"/index.ios.bundle");
+  jsCodeLocation = RCTPackagerURL(@"/index.ios.bundle");
 
   /**
    * OPTION 2

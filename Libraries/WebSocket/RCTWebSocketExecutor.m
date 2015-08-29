@@ -39,7 +39,7 @@ RCT_EXPORT_MODULE()
 
 - (instancetype)init
 {
-  return [self initWithURL:RCTWebSocketExecutorURL(@"/debugger-proxy")];
+  return [self initWithURL:RCTPackagerURL(@"/debugger-proxy")];
 }
 
 - (instancetype)initWithURL:(NSURL *)URL

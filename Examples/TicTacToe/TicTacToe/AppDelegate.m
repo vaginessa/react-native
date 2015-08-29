@@ -37,7 +37,7 @@
    * on the same Wi-Fi network.
    */
 
-  jsCodeLocation = RCTWebSocketExecutorURL(@"/Examples/TicTacToe/TicTacToeApp.includeRequire.runModule.bundle");
+  jsCodeLocation = RCTPackagerURL(@"/Examples/TicTacToe/TicTacToeApp.includeRequire.runModule.bundle");
   
 
   /**

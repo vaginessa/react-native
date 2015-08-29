@@ -68,4 +68,4 @@ RCT_EXTERN NSURL *RCTDataURL(NSString *mimeType, NSData *data);
 RCT_EXTERN NSData *RCTGzipData(NSData *data, float level);
 
 // Create NSURL for jsCodeLocation in AppDelegate:application
-RCT_EXTERN NSURL *RCTWebSocketExecutorURL(NSString *appendString);
+RCT_EXTERN NSURL *RCTPackagerURL(NSString *appendString);

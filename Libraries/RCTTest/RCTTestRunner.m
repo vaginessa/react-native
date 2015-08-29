@@ -49,7 +49,7 @@
     _scriptURL = [[NSBundle bundleForClass:[RCTBridge class]] URLForResource:@"main" withExtension:@"jsbundle"];
     RCTAssert(_scriptURL != nil, @"Could not locate main.jsBundle");
 #else
-    _scriptURL = RCTWebSocketExecutorURL( [NSString stringWithFormat:@"/%@.includeRequire.runModule.bundle?dev=true", app] );
+    _scriptURL = RCTPackagerURL( [NSString stringWithFormat:@"/%@.includeRequire.runModule.bundle?dev=true", app] );
 #endif
   }
   return self;
