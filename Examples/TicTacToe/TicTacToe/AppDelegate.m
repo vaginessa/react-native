@@ -37,15 +37,14 @@
    * on the same Wi-Fi network.
    */
 
-  jsCodeLocation = RCTPackagerURL(@"/Examples/TicTacToe/TicTacToeApp.includeRequire.runModule.bundle");
+  jsCodeLocation = RCTPackagerURL(@"/Examples/TicTacToe/TicTacToeApp.bundle?platform=ios");
   
-
   /**
    * OPTION 2
    * Load from pre-bundled file on disk. To re-generate the static bundle, `cd`
    * to your Xcode project folder in the terminal, and run
    *
-   * $ curl 'http://localhost:8081/Examples/TicTacToe/TicTacToeApp.includeRequire.runModule.bundle' -o main.jsbundle
+   * $ curl 'http://localhost:8081/Examples/TicTacToe/TicTacToeApp.bundle?platform=ios' -o main.jsbundle
    *
    * then add the `main.jsbundle` file to your project and uncomment this line:
    */
