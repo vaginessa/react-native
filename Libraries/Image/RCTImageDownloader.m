@@ -34,6 +34,11 @@ RCT_EXPORT_MODULE()
   return self;
 }
 
+- (float)imageLoaderPriority
+{
+  return 10;
+}
+
 - (BOOL)canLoadImageURL:(NSURL *)requestURL
 {
   // Have to exclude 'file://' from the main bundle, otherwise this would conflict with RCTAssetBundleImageLoader
