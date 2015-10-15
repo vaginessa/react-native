@@ -8,9 +8,9 @@
  */
 'use strict';
 
+const chalk = require('chalk');
 const path = require('path');
 const getPlatformExtension = require('../../lib/getPlatformExtension');
-const Promise = require('promise');
 
 const GENERIC_PLATFORM = 'generic';
 
@@ -19,11 +19,11 @@ class HasteMap {
     this._fastfs = fastfs;
     this._moduleCache = moduleCache;
     this._helpers = helpers;
+    this._map = Object.create(null);
+    this._warnedAbout = Object.create(null);
   }
 
   build() {
-    this._map = Object.create(null);
-
     let promises = this._fastfs.findFilesByExt('js', {
       ignore: (file) => this._helpers.isNodeModulesDir(file)
     }).map(file => this._processHasteModule(file));
@@ -39,15 +39,20 @@ class HasteMap {
 
   processFileChange(type, absPath) {
     return Promise.resolve().then(() => {
+      // Rewarn after file changes.
+      this._warnedAbout = Object.create(null);
+
       /*eslint no-labels: 0 */
       if (type === 'delete' || type === 'change') {
         loop: for (let name in this._map) {
           const modulesMap = this._map[name];
           for (let platform in modulesMap) {
-            const module = modulesMap[platform];
-            if (module.path === absPath) {
-              delete modulesMap[platform];
-              break loop;
+            const modules = modulesMap[platform];
+            for (var i = 0; i < modules.length; i++) {
+              if (modules[i].path === absPath) {
+                modules.splice(i, 1);
+                break loop;
+              }
             }
           }
         }
@@ -77,15 +82,38 @@ class HasteMap {
     // If no platform is given we choose the generic platform module list.
     // If a platform is given and no modules exist we fallback
     // to the generic platform module list.
+    let modules;
     if (platform == null) {
-      return modulesMap[GENERIC_PLATFORM];
+      modules = modulesMap[GENERIC_PLATFORM];
     } else {
-      let module = modulesMap[platform];
-      if (module == null) {
-        module = modulesMap[GENERIC_PLATFORM];
+      modules = modulesMap[platform];
+      if (modules == null) {
+        modules = modulesMap[GENERIC_PLATFORM];
       }
-      return module;
     }
+
+    if (modules == null) {
+      return null;
+    }
+
+    if (modules.length > 1) {
+      if (!this._warnedAbout[name]) {
+        this._warnedAbout[name] = true;
+        console.warn(
+          chalk.yellow(
+            '\nWARNING: Found multiple haste modules or packages ' +
+            'with the name `%s`. Please fix this by adding it to ' +
+            'the blacklist or deleting the modules keeping only one.\n'
+          ),
+          name,
+          modules.map(m => m.path).join('\n'),
+        );
+      }
+
+      return modules[0];
+    }
+
+    return modules[0];
   }
 
   _processHasteModule(file) {
@@ -119,14 +147,11 @@ class HasteMap {
     const moduleMap = this._map[name];
     const modulePlatform = getPlatformExtension(mod.path) || GENERIC_PLATFORM;
 
-    if (moduleMap[modulePlatform]) {
-      throw new Error(
-        `Naming collision detected: ${mod.path} ` +
-        `collides with ${moduleMap[modulePlatform].path}`
-      );
+    if (!moduleMap[modulePlatform]) {
+      moduleMap[modulePlatform] = [];
     }
 
-    moduleMap[modulePlatform] = mod;
+    moduleMap[modulePlatform].push(mod);
   }
 }
 
